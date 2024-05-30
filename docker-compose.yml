@@ -1,0 +1,20 @@
+services:
+  d2c.sh:
+    image: steeven9/d2c.sh
+    container_name: d2c.sh
+    volumes:
+      - type: bind
+        source: ./d2c.toml
+        target: /etc/d2c/d2c.toml
+    environment:
+      - TZ=Europe/Paris
+      - APPRISE_SIDECAR_URL=apprise:5000
+    depends_on:
+      - apprise
+
+  apprise:
+    image: mazzolino/apprise-microservice
+    container_name: apprise
+    environment:
+      - TZ=Europe/Paris
+      - NOTIFICATION_URLS=${DISCORD_WEBHOOK}    # example

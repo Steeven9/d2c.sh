@@ -87,6 +87,8 @@ api-key = "bbb"
 ...
 ```
 
+(see `d2c_example.toml` for the syntax)
+
 Finally, you can run manually d2c.sh or set up a cronjob to update periodically:
 
 ```sh
@@ -98,7 +100,13 @@ $ d2c.sh # manually
 $ crontab -e # set cronjob to run d2c.sh periodically
 ```
 
-### Method 2: Executing from URL
+### Method 2: Docker
+
+See `docker-compose.yml` for an example config.
+
+Note: you will need to find a way to run it periodically (e.g. [swarm-cronjob](https://github.com/crazy-max/swarm-cronjob) in Swarm mode).
+
+### Method 3: Executing from URL
 
 You can also execute d2c.sh avoiding the installation. Note that you must still have a valid configuration file: `/etc/d2c/d2c.toml`.
 
