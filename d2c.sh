@@ -132,3 +132,5 @@ for record in ${existing_records_raw[@]}; do
         fi
     done
 done
+
+echo "Done!"

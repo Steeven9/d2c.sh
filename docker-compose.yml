@@ -1,7 +1,7 @@
 services:
-  d2c.sh:
+  d2c:
     image: steeven9/d2c.sh
-    container_name: d2c.sh
+    container_name: d2c
     volumes:
       - type: bind
         source: ./d2c.toml
