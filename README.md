@@ -2,11 +2,9 @@
 
 Update Cloudflare DNS 'A' records for your dynamic IP.
 
----
-
 d2c.sh (Dynamic DNS Cloudflare) is a very simple bash script to automatically update the IP address of A DNS records from Cloudflare.
 
-### Configure
+## Configuration
 
 d2c.sh is configured using a TOML file located in `/etc/d2c/d2c.toml`. The first time you run d2c.sh from the command-line, it will create the config directory for you. You still have to manually create the TOML configuration file.
 
@@ -28,7 +26,7 @@ proxy = false
 
 When d2c.sh is ran, it UPDATES the records configured in `/etc/d2c/d2c.toml` with the current public IP of the machine. The A records be created from the Cloudflare dashboard, then d2c.sh will be able to UPDATE them with the public IP of the server.
 
-### Usage
+## Usage
 
 ```sh
 $ d2c.sh --help
@@ -56,7 +54,7 @@ proxy = true
 
 ```
 
-#### Method 1: Installing d2c.sh
+### Method 1: Installing d2c.sh
 
 Install d2c.sh using the installation script:
 
@@ -100,7 +98,7 @@ $ d2c.sh # manually
 $ crontab -e # set cronjob to run d2c.sh periodically
 ```
 
-#### Method 2: Executing from URL
+### Method 2: Executing from URL
 
 You can also execute d2c.sh avoiding the installation. Note that you must still have a valid configuration file: `/etc/d2c/d2c.toml`.
 
@@ -123,3 +121,9 @@ bash <(curl -s https://raw.githubusercontent.com/ddries/d2c.sh/master/d2c.sh)
 
 $ crontab -e # set cronjob to run periodically
 ```
+
+## Notifications
+
+If the `APPRISE_SIDECAR_URL` environment variable is set, a notification will be sent out to the
+specified [Apprise](https://github.com/djmaze/apprise-microservice) container
+when a record is updated or if a failure is encountered.

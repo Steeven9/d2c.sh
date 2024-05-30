@@ -34,6 +34,14 @@ print_usage() {
 '
 }
 
+send_notification() {
+    if [[ "${APPRISE_SIDECAR_URL}" != "" ]]; then
+        status=$(curl --no-progress-meter -X POST -H "Content-Type: application/json" \
+            --data "{\"title\": \"$1\", \"body\": \"$2\", \"notify_type\": \"$3\"}" "${APPRISE_SIDECAR_URL}")
+        echo "Sending notification: $status"
+    fi
+}
+
 # print usage if requested
 if [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     print_usage
@@ -98,7 +106,7 @@ for record in ${existing_records_raw[@]}; do
         if [ "$name" = "$c_name" ]; then
             if [ "$public_ip" != "$content" ]; then
                 # update dns
-                curl --silent --request PATCH \
+                result=$(curl --no-progress-meter --request PATCH \
                 --url "${cloudflare_base}/zones/${zone_id}/dns_records/${id}" \
                 --header 'Content-Type: application/json' \
                 --header "Authorization: Bearer ${api_key}" \
@@ -109,12 +117,18 @@ for record in ${existing_records_raw[@]}; do
                     "type": "A",
                     "comment": "Managed by d2c.sh",
                     "ttl": '${ttl}'
-                }' > /dev/null
+                }')
 
-                echo "[d2c.sh] OK: ${name}"
+                if [ "$(echo $result | jq '.success')" = "true" ]; then
+                    echo "[d2c.sh] OK: ${name}"
+                    send_notification "DNS updated" "Updated successfully: ${name}" "success"
+                else
+                    echo "[d2c.sh] Failure: ${name} - $(echo $result | jq '.errors')"
+                    send_notification "DNS update error" "Failed to update: ${name}" "failure"
+                fi
+            else
+                echo "[d2c.sh] ${name} did not change"
             fi
-
-            echo "[d2c.sh] ${name} did not change"
         fi
     done
 done
